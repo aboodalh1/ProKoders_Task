@@ -20,16 +20,20 @@ class ItemDetails extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Item Details')),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(18.0),
         child: Column(
           children: [
             FancyShimmerImage(imageUrl: image,  errorWidget: Icon(Icons.shopify_sharp,size: 120.sp,),),
             Row(
               children: [
-                Text(
-                  textAlign: TextAlign.start,
-                  title,
-                  style: AppStyles.interMedium20(context)
+                SizedBox(
+                  width: MediaQuery.of(context).size.width*0.9,
+                  child: Text
+                                (
+                    textAlign: TextAlign.start,
+                    title,
+                    style: AppStyles.interMedium20(context)
+                  ),
                 ),
               ],
             ),
@@ -45,7 +49,11 @@ class ItemDetails extends StatelessWidget {
             SizedBox(height: 10.h),
             Row(
               children: [
-                Text(description, style: AppStyles.allertaStencilNormal15(context)),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width*0.9,
+                  child: Text(  
+                    description, style: AppStyles.allertaStencilNormal15(context)),
+                ),
               ],
             ),
           ],

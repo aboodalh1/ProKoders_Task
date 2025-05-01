@@ -34,6 +34,7 @@ class LoginBody extends StatelessWidget {
                 AuthenticationHeader(text: 'Welcome back you\'ve been missed'),
                 SizedBox(height: 25.h),
                 MyTextField(
+                  isEmail: true,
                   controller: emailController,
                   hintText: 'Email',
                   obsecureText: false,
@@ -42,18 +43,18 @@ class LoginBody extends StatelessWidget {
                 MyTextField(
                   controller: passwordController,
                   hintText: 'Password',
-                  obsecureText: provider.isPasswordShown,
+                  obsecureText: provider.loginIsPasswordShown,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     CustomTextButton(
                       text:
-                          provider.isPasswordShown
+                          provider.loginIsPasswordShown
                               ? Text("Show password")
-                              : Text("Hide password"),
+                              : Text("Hide password"), 
                       onPressed: () {
-                        provider.showHidePassword();
+                        provider.showHidePassword(isRegister: false);
                       },
                     ),
                   ],

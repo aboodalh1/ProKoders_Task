@@ -4,13 +4,15 @@ class MyTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final bool obsecureText;
+  final bool ? isEmail;
 
-  const MyTextField({super.key,required this.controller,required this.hintText, required this.obsecureText});
+  const MyTextField({super.key,this.isEmail,required this.controller,required this.hintText, required this.obsecureText});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      keyboardType: isEmail!=null && isEmail==true?TextInputType.emailAddress:null,
       obscureText: obsecureText,
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(

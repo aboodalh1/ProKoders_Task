@@ -6,6 +6,7 @@ import 'package:prokoders_login_task/core/widgets/my_button.dart';
 import 'package:prokoders_login_task/core/widgets/my_text_field.dart';
 import 'package:prokoders_login_task/features/authentication/provider/auth_provider.dart';
 import 'package:prokoders_login_task/features/authentication/view/widgets/authentication_header.dart';
+import 'package:prokoders_login_task/features/authentication/view/widgets/custom_text_button.dart';
 import 'package:prokoders_login_task/features/authentication/view/widgets/toggle_row.dart';
 import 'package:prokoders_login_task/features/items/view/home_screen.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = context.watch<AuthProvider>().isLoading;
+    final provider = context.watch<AuthProvider>();
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Scaffold(
@@ -69,16 +70,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     MyTextField(
                       controller: passwordController,
                       hintText: 'Password',
-                      obsecureText: true,
+                      obsecureText: provider.registerIsPasswordShown,
                     ),
                     SizedBox(height: 10.h),
                     MyTextField(
                       controller: confirmPasswordController,
                       hintText: 'Confirm your password',
-                      obsecureText: true,
+                      obsecureText: provider.registerIsPasswordShown,
                     ),
+                      Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CustomTextButton(
+                      text:
+                          provider.registerIsPasswordShown
+                              ? Text("Show password")
+                              : Text("Hide password"), 
+                      onPressed: () {
+                        provider.showHidePassword(isRegister: true);
+                      },
+                    ),
+                  ],
+                ),
                     SizedBox(height: 25.h),
-                    isLoading
+                    provider.isLoading
                         ? LinearProgressIndicator(color: Colors.black)
                         : MyButton(onTap: signUp, text: 'Sign up'),
                     SizedBox(height: 50.h),

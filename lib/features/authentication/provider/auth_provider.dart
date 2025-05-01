@@ -6,10 +6,11 @@ import 'package:prokoders_login_task/features/authentication/data/user_session.d
 class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   bool isLoading = false;
-  bool isPasswordShown = true;
+  bool loginIsPasswordShown = true;
+  bool registerIsPasswordShown = true;
 
-  void showHidePassword() {
-    isPasswordShown = !isPasswordShown;
+  void showHidePassword({required bool isRegister}) {
+    isRegister? registerIsPasswordShown = !registerIsPasswordShown: loginIsPasswordShown = !loginIsPasswordShown;
     notifyListeners();
   }
 
