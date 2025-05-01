@@ -4,7 +4,6 @@ import 'package:prokoders_login_task/core/util/navigate_function.dart';
 import 'package:prokoders_login_task/core/util/styles.dart';
 import 'package:prokoders_login_task/features/authentication/auth_gate.dart';
 
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -13,16 +12,15 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
- 
-
   @override
   void initState() {
     super.initState();
-   
 
     Future.delayed(Duration(seconds: 3)).then((value) {
-      navigateAndFinish(context,
-          Directionality(textDirection: TextDirection.rtl, child: AuthGate()));
+      navigateAndFinish(
+        context,
+        Directionality(textDirection: TextDirection.rtl, child: AuthGate()),
+      );
     });
   }
 
@@ -40,12 +38,20 @@ class _SplashScreenState extends State<SplashScreen> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Lottie.asset('assets/animation/ani1.json',width: 300,
-                      height: 300,
-                      fit: BoxFit.contain),
-            Text("Pro Kooders Shopping",style: AppStyles.interMedium20(context).copyWith(color: Colors.white),)
+              Lottie.asset(
+                'assets/animation/ani1.json',
+                width: 300,
+                height: 300,
+                fit: BoxFit.contain,
+              ),
+              Text(
+                "Pro Kooders Shopping",
+                style: AppStyles.interMedium20(
+                  context,
+                ).copyWith(color: Colors.white),
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

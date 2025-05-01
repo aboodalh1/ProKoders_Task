@@ -1,7 +1,6 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:prokoders_login_task/core/util/styles.dart';
 
 class ItemDetails extends StatelessWidget {
@@ -44,7 +43,11 @@ class ItemDetails extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10.h),
-            Text(description, style: GoogleFonts.inter(fontSize: 16.sp)),
+            Row(
+              children: [
+                Text(description, style: AppStyles.allertaStencilNormal15(context)),
+              ],
+            ),
           ],
         ),
       ),

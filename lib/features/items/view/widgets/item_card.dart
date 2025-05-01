@@ -22,13 +22,15 @@ class ItemCard extends StatelessWidget {
           title: item.title!, description: item.description!));
       },
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10.h,horizontal: 7.w),
+        padding:  EdgeInsets.symmetric(vertical: 8.h),
+        margin: EdgeInsets.symmetric(vertical: 10.h),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20.r)
-        ),
+        ), 
         child: 
-         Column( 
+         Row( 
+          crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FancyShimmerImage(
                 imageUrl: item.images![0],
@@ -36,16 +38,32 @@ class ItemCard extends StatelessWidget {
                 width: 160.w,
                 errorWidget: Icon(Icons.shopify_sharp,size: 120.sp,),
               ),
-              SizedBox(height: 10.w),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.38,
-                child: Text(
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  item.title!,
-                  style: AppStyles.allertaStencilSemiBold15(context)
-                ),
+              SizedBox(width: 10.w),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.38,
+                    child: Text(
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.start,
+                      item.title!,
+                      style: AppStyles.allertaStencilSemiBold15(context)
+                    ),
+                  ),
+                  SizedBox(height: 10.h,),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.45,
+                    child: Text(
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.start,
+                      "Description: ${item.description!}",
+                      style: AppStyles.allertaStencilNormal15(context).copyWith(color: Colors.grey,fontSize: 12.sp)
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

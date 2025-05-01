@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:prokoders_login_task/features/items/provider/items_provider.dart';
-
 
 class CustomButton extends StatelessWidget {
-  const CustomButton({super.key, required this.provider});
+  const CustomButton({super.key, required this.onTap});
 
-  final ItemProvider provider;
-
+  final VoidCallback onTap;
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -14,7 +11,7 @@ class CustomButton extends StatelessWidget {
         backgroundColor: WidgetStateProperty.all(Colors.black),
         foregroundColor: WidgetStateProperty.all(Colors.white),
       ),
-      onPressed: () => provider.fetchItems(),
+      onPressed: onTap,
       child: Text('Retry'),
     );
   }

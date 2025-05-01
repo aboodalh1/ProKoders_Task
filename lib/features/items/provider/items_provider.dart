@@ -1,9 +1,11 @@
-import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:prokoders_login_task/core/util/object_validator.dart';
 import 'package:prokoders_login_task/features/authentication/data/user_session.dart';
+import 'package:prokoders_login_task/features/items/data/model/product_factory.dart';
+import 'package:prokoders_login_task/features/items/data/model/product_model.dart';
 import 'package:prokoders_login_task/features/items/data/repos/item_repository.dart';
-import '../data/model/product_model.dart';
+import 'package:prokoders_login_task/core/util/ui_state.dart';
 
 class ItemProvider with ChangeNotifier {
   ItemProvider(this.itemRepository) {
@@ -11,122 +13,123 @@ class ItemProvider with ChangeNotifier {
     scrollController.addListener(_onScroll);
   }
 
+  final ItemRepository itemRepository;
+  final ObjectValidator objectValidator = ObjectValidator();
+
   int page = 0;
-  _onScroll() {
+  ScrollController scrollController = ScrollController();
+
+  UiState<List<Products>> itemsState = UiState(data: []);
+  UiState<void> addItemState = UiState();
+  UiState<void> loadMoreState = UiState();
+
+  List<Products> get items => itemsState.data ?? [];
+  bool get isLoading => itemsState.isLoading;
+  String? get error => itemsState.error;
+  String? get moreItemError => loadMoreState.error;
+
+  void _onScroll() {
     if (scrollController.position.pixels ==
         scrollController.position.maxScrollExtent) {
-    page = page+1;
-      fetchMoreItems(page: page );
+      fetchMoreItems();
     }
   }
-
-  bool isLoadingMore = false;
-  bool _isLoading = false;
-  bool isAddItemLoading = false;
-
-  ScrollController scrollController = ScrollController();
-  
-  final ItemRepository itemRepository;
-
-  List<Products> _items = [];
-  
-  
-  String? _error;
-  
-  String? _addItemError;
-
-  List<Products> get items => _items;
-
-  bool get isLoading => _isLoading;
-
-  String? get error => _error;
-
-  String? get addItemError => _addItemError;
 
   Future<void> fetchItems() async {
-    _isLoading = true;
-    _error = null;
+    itemsState = itemsState.copyWith(isLoading: true, error: null);
     notifyListeners();
     try {
-      var result = await itemRepository.fetchItems(page: 0);
+      final result = await itemRepository.fetchItems(page: 0);
       result.fold(
         (failure) {
-          _error = failure.errMessage;
+          itemsState = itemsState.copyWith(error: failure.errMessage);
         },
         (response) {
-          _items.addAll (response.products!);
+          itemsState = UiState(data: response.products);
         },
       );
     } catch (e) {
-      _error = "Failed to load items";
+      itemsState = itemsState.copyWith(error: "Failed to load items");
     } finally {
-      _isLoading = false;
+      itemsState = itemsState.copyWith(isLoading: false);
       notifyListeners();
     }
   }
 
-  Future<void> fetchMoreItems({required int page}) async {
-    isLoadingMore = true;
-    _error = null;
+  Future<void> fetchMoreItems() async {
+    loadMoreState = loadMoreState.copyWith(isLoading: true, error: null);
+    page += 1;
     notifyListeners();
     try {
-      var result = await itemRepository.fetchItems(page: page);
+      final result = await itemRepository.fetchItems(page: page);
       result.fold(
         (failure) {
-          _error = failure.errMessage;
+          loadMoreState = loadMoreState.copyWith(error: failure.errMessage);
         },
         (response) {
-          _items.addAll(response.products!);
+          final updatedList = [...items, ...response.products!];
+          itemsState = itemsState.copyWith(data: updatedList);
         },
       );
     } catch (e) {
-      _error = "Failed to load items";
+      loadMoreState = loadMoreState.copyWith(error: "Failed to load items");
+      if (page > 0) page -= 1;
     } finally {
-      isLoadingMore = false;
+      loadMoreState = loadMoreState.copyWith(isLoading: false);
       notifyListeners();
     }
   }
 
-  Future<void> addItem(context ,{required String title, required String description}) async {
-  try {
-    if(title.trim().length<3 || title.trim().length>40){
-      _addItemError = "Title must be between 3 and 40 char";
-      throw _addItemError!;
-    }  
-    if(description.trim().length<10 || description.trim().length>140){
-      _addItemError = "Description must be between 10 and 140 char";
-      throw _addItemError!;
-    }
-  isAddItemLoading = true;
-  _addItemError = null;
-  notifyListeners(); 
-    final result = await itemRepository.addItem(title: title.trim(), description: description.trim());
-    result.fold(
-      (failure) {
-        _addItemError = failure.errMessage;
-        throw _addItemError!;
-      },
-      (response) async {
-    _items.insert(0,Products(description: description,id: 195,images:  [''],title: title));
-    Navigator.of(context).pop();
-    _addItemError = null;
-        await fetchItems(); 
-      }, 
+  Future<void> addItem(
+    BuildContext context, {
+    required String title,
+    required String description,
+  }) async {
+    final validation = objectValidator.verifyTitleAndDescription(
+      title,
+      description,
     );
-  } catch (e) {
-    _addItemError = e.toString().substring(11,e.toString().length);
+    if (validation != "true") {
+      addItemState = addItemState.copyWith(error: validation);
+      notifyListeners();
+      return;
+    }
+
+    addItemState = addItemState.copyWith(isLoading: true, error: null);
     notifyListeners();
-  } finally {
-    isAddItemLoading = false;
-    notifyListeners();
+
+    try {
+      final result = await itemRepository.addItem(
+        title: title.trim(),
+        description: description.trim(),
+      );
+      result.fold(
+        (failure) {
+          addItemState = addItemState.copyWith(error: failure.errMessage);
+        },
+        (response) async {
+          final product = ProductFactory.createWithParams(
+            id: 0,
+            title: title,
+            description: description,
+            image: [''],
+          );
+          items.insert(0, product);
+          Navigator.of(context).pop();
+        },
+      );
+    } catch (e) {
+      addItemState = addItemState.copyWith(
+        error: e.toString().replaceFirst("Exception: ", ""),
+      );
+    } finally {
+      addItemState = addItemState.copyWith(isLoading: false);
+      notifyListeners();
+    }
   }
-}
 
-
-  Future <void> signOut() async 
-  {
+  Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
     UserSession().clear();
   }
-
 }

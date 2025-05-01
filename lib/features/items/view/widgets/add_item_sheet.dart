@@ -77,11 +77,11 @@ class _AddItemSheetState extends State<AddItemSheet> {
               obsecureText: false,
             ),
             SizedBox(height: 20.h),
-            if (provider.addItemError != null) Padding(
+            if (provider.addItemState.error != null) Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(provider.addItemError!,style: AppStyles.allertaStencilNormal15(context),),
+              child: Text(provider.addItemState.error!,style: AppStyles.allertaStencilNormal15(context),),
             ),
-            provider.isAddItemLoading
+            provider.addItemState.isLoading
                 ? Center(child: CircularProgressIndicator(color: Colors.black))
                 : MyButton(
                   text: "Submit",

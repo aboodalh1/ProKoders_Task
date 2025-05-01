@@ -11,9 +11,9 @@ class SignOutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-              onPressed: ()async{
+              onPressed: (){
                 try{ 
-                await itemProvider.signOut();
+                itemProvider.signOut();
                 navigateAndFinish(context, AuthGate());
                 }catch(e){
                   customSnackBar(context, e.toString());

@@ -18,9 +18,9 @@ class Products {
     String? title,
     num? price,
   }) => Products(  id: id ?? this.id,
-    images: images ?? this.images,
+    images: images ?? images,
     title: title ?? this.title,
-    description: description ?? this.description,
+    description: description ?? description,
   );
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

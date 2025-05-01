@@ -14,4 +14,18 @@ class ObjectValidator {
       }
       return "true";
   }
+
+  String verifyTitleAndDescription(String title,String description){
+  if (title.trim().length < 3 || title.trim().length > 40) {
+        return "Title must be between 3 and 40 char";
+        
+      }
+      if (description.trim().length < 10 || description.trim().length > 140) {
+        return "Description must be between 10 and 140 char";
+        
+      }     return "true";
+  }
+
+
+
 }

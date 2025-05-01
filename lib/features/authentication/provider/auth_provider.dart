@@ -13,10 +13,6 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  TextEditingController emailController = TextEditingController();
-
-  TextEditingController passwordController = TextEditingController();
-
   ObjectValidator objectValidator = ObjectValidator();
 
   Future<UserCredential> signInWithEmailAndPassword(
